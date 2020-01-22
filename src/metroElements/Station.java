@@ -15,4 +15,15 @@ public class Station {
     public String toString() {
         return line + " - " + number + ": " + name;
     }
+    public String getLine() {
+        return line;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getNumber() {
+        return number;
+    }
 }

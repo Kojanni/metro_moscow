@@ -1,10 +1,21 @@
-import org.json.simple.JSONObject;
+import com.google.gson.Gson;
+import metroElements.Line;
+
+import java.util.ArrayList;
+
 
 public class JSONCreator {
-    private static String RED = "background:#EF161E";
 
-    public JSONObject createJSON(){
-
-        return null;
+    public JSONCreator() {
+        super();
     }
+
+    public void createJSON(ArrayList<Line> lines) {
+        Gson gson = new Gson();
+        lines.forEach(l -> {
+            String json = gson.toJson(l);
+                });
+
+    }
+
 }

@@ -15,6 +15,9 @@ public class Line {
     private static String BLUE_GREY = "#A1B3D4";
     private static String PALE_VIOLET = "#DE64A1";
     private static String MCR_14 = "#FFFFFF";
+    private static String MM = "#9999FF";
+    private static String NONE = "none";
+    private static String LIGHT_GREEN = "#99CC00";
 
     String number;
     String name;
@@ -29,6 +32,10 @@ public class Line {
     @Override
     public String toString() {
         return number + ": " + name + " - " + determLineColor(color);
+    }
+
+    public String getNumber(){
+        return number;
     }
 
     //переводит нумерной цвет в именной
@@ -75,6 +82,16 @@ public class Line {
         }
         if (background.contains(MCR_14)) {
             lineColor = "Moscow central ring";
+        }
+        if (background.contains(MM)) {
+            lineColor = "Moscow Monorail";
+        }
+
+        if (background.contains(LIGHT_GREEN)) {
+            lineColor = "Light green";
+        }
+        if (lineColor == null) {
+            lineColor = "STATION CONSTRUCTION";
         }
         return lineColor;
     }

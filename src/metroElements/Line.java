@@ -1,5 +1,8 @@
 package metroElements;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 public class Line {
     private static String RED = "#EF161E";
     private static String GREEN = "#2DBE2C";
@@ -19,19 +22,19 @@ public class Line {
     private static String NONE = "none";
     private static String LIGHT_GREEN = "#99CC00";
 
-    String number;
-    String name;
-    String color;
+    private String number;
+    private String name;
+    private String color;
 
     public Line(String number, String name, String color) {
         this.number = number;
         this.name = name;
-        this.color = color;
+        this.color = determLineColor(color);
     }
 
     @Override
     public String toString() {
-        return number + ": " + name + " - " + determLineColor(color);
+        return number + ": " + name + " - " + color;
     }
 
     public String getNumber(){
@@ -42,13 +45,13 @@ public class Line {
     public static String determLineColor(String background) {
         String lineColor = null;
         if (background.contains(RED)) {
-            lineColor = "RED";
+            lineColor = "Red";
         }
         if (background.contains(GREEN)) {
-            lineColor = "BRIGHT GREEN";
+            lineColor = "Bright green";
         }
         if (background.contains(BLUE)) {
-            lineColor = "BLUE";
+            lineColor = "Blue";
         }
         if (background.contains(LIGHT_BLUE)) {
             lineColor = "Light blue";

@@ -3,6 +3,7 @@ package metroElements;
 import java.util.ArrayList;
 
 public class Connection {
+
     private ArrayList<Station> connectionStations = new ArrayList<>();
 
     public Connection(ArrayList<Station> stations) {
@@ -21,7 +22,7 @@ public class Connection {
     public String toString() {
         String returnStr = "Line  |  Station\n";
         for (Station stName : getConnectionStations()) {
-            returnStr += stName.line + "  |  " + stName.name + "\n";
+            returnStr += stName.getLine() + "  |  " + stName.getName() + "\n";
         }
         return returnStr;
     }

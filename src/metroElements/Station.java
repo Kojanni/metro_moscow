@@ -1,9 +1,9 @@
 package metroElements;
 
 public class Station {
-    String line;
-    String number;
-    String name;
+    private String line;
+    private transient String number;
+    private String name;
 
     public Station( String line, String number, String name) {
         this.line = line;

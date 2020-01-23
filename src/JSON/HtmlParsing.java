@@ -1,3 +1,5 @@
+package JSON;
+
 import metroElements.Connection;
 import metroElements.Line;
 import metroElements.Station;
@@ -125,7 +127,6 @@ public class HtmlParsing {
                     stationCreateInfo[1] = stationNumber;
                 }
             }
-//1 станция
             if (lineStationNumbers.trim().split(" +").length >= 1) {
                 String lineINFO[] = e.select("span").text().trim().split(" +");
                 boolean allNum = true;
@@ -133,7 +134,6 @@ public class HtmlParsing {
                     if (!lineINFO[i].matches("\\d+.")) {
                         allNum = false;
                     }
-
                     if (allNum) {
                         stationsLineInfo.add(lineINFO[i]);
                     }
@@ -158,7 +158,6 @@ public class HtmlParsing {
                     stationCreateInfo[i] = null;
                 }
             }
-//остальные:
             if (e.select("span").attr("title").contains("Переход ")) {
                 e.select("span").forEach(e2 -> {
                     if (e2.attr("title").contains("Переход ")) {

@@ -1,8 +1,5 @@
 package JSON;
-
-import metroElements.Connection;
-import metroElements.Line;
-import metroElements.Station;
+import metroElements.*;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;

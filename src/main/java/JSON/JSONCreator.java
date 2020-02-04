@@ -10,15 +10,15 @@ import java.io.IOException;
 
 
 public class JSONCreator {
-    private static final String JSONFILENAME = "data/map.json";
-    String jsonStr;
+    private String jsonFileName;
+    private String jsonStr;
 
 
-    public JSONCreator() {
-        super();
+    public JSONCreator(String jsonFileFullUrl) {
+        this.jsonFileName = jsonFileFullUrl;
     }
 
-    public String createJSONString(Metro metro) {
+    protected String createJSONString(Metro metro) {
         GsonBuilder gsonBuilder = new GsonBuilder();
         Gson gson = gsonBuilder.setPrettyPrinting().create();
         jsonStr = gson.toJson(metro);
@@ -26,7 +26,7 @@ public class JSONCreator {
     }
 
     public void createJSONFile(Metro metro) {
-        try (FileWriter fileWriter = new FileWriter(JSONFILENAME)) {
+        try (FileWriter fileWriter = new FileWriter(jsonFileName)) {
             fileWriter.write(createJSONString(metro));
         } catch (IOException ex) {
             ex.printStackTrace();

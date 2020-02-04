@@ -15,9 +15,9 @@ public class HtmlParsing {
 
     public HtmlParsing(String siteUrl) throws IOException {
         this.siteUrl = siteUrl;
-        readMetroLine();
-        readMetroStation();
-        readMetroConnection();
+        this.stations = readMetroStation(siteUrl);
+        this.lines = readMetroLine(siteUrl);
+        this.connections = readMetroConnection(siteUrl);
     }
 
     public ArrayList<Station> getStations() {
@@ -32,49 +32,50 @@ public class HtmlParsing {
         return this.connections;
     }
 
-    public void setConnections(ArrayList<Connection> connections) {
-        this.connections = connections;
-    }
-
-    public void readMetroStation() throws IOException {
+    public ArrayList<Station> readMetroStation(String siteUrl) throws IOException {
         ArrayList<Station> readStation = new ArrayList<>();
-        Document doc = Jsoup.connect(this.siteUrl).maxBodySize(0).get();
+        Document doc = Jsoup.connect(siteUrl).maxBodySize(0).get();
         Elements element = doc.select("td");
         String[] stationCreateInfo = new String[3];
+        int lineNumberIndex = 0;
+        int stationNumberIndex = 1;
+        int stationNameIndex = 2;
+        int lineInfo_line = 0;
+        int lineInfo_numberStation = 2;
+
         element.forEach(e ->
         {
             String lineStationNumbers = e.select("span").text();
             if (lineStationNumbers.trim().split(" ").length >= 3) {
                 String lineINFO[] = e.select("span").text().trim().split(" ");
-                if (lineINFO[0].matches("\\d+.") && lineINFO[2].matches("\\d+")) {
+                if (lineINFO[lineInfo_line].matches("\\d+.") && lineINFO[lineInfo_numberStation].matches("\\d+")) {
                     String lineNumber = lineINFO[e.select("span").text().trim().split(" ").length - 3];
                     String stationNumber = lineINFO[e.select("span").text().trim().split(" ").length - 1];
-                    stationCreateInfo[0] = lineNumber;
-                    stationCreateInfo[1] = stationNumber;
+                    stationCreateInfo[lineNumberIndex] = lineNumber;
+                    stationCreateInfo[stationNumberIndex] = stationNumber;
                 }
             }
             if ((e.select("a").attr("title").contains(" (станция"))
                     || (e.select("a").attr("title").matches("Фонвизинская"))
                     || (e.select("a").attr("title").matches("Полежаевская"))) {
                 String stationName = e.select("a").attr("title");
-                stationCreateInfo[2] = stationName;
+                stationCreateInfo[stationNameIndex] = stationName;
             }
-            if (stationCreateInfo[2] != null && stationCreateInfo[0] != null) {
-                if (stationCreateInfo[2].contains("(")) {
-                    int indexStartComment = stationCreateInfo[2].indexOf("(");
-                    //System.out.println(stationCreateInfo[2] + ": " + indexStartComment);
-                    stationCreateInfo[2] = stationCreateInfo[2].substring(0, (indexStartComment - 1));
+            if (stationCreateInfo[stationNameIndex] != null && stationCreateInfo[lineNumberIndex] != null) {
+                if (stationCreateInfo[stationNameIndex].contains("(")) {
+                    int indexStartComment = stationCreateInfo[stationNameIndex].indexOf("(");
+                    stationCreateInfo[stationNameIndex] = stationCreateInfo[stationNameIndex].substring(0, (indexStartComment - 1));
                 }
-                readStation.add(new Station(stationCreateInfo[0], stationCreateInfo[1], stationCreateInfo[2]));
+                readStation.add(new Station(stationCreateInfo[lineNumberIndex], stationCreateInfo[stationNumberIndex], stationCreateInfo[stationNameIndex]));
                 for (int i = 0; i <= 2; i++) {
                     stationCreateInfo[i] = null;
                 }
             }
         });
-        stations = readStation;
+        return readStation;
     }
 
-    public void readMetroLine() throws IOException {
+    public ArrayList<Line> readMetroLine(String siteUrl) throws IOException {
         ArrayList<Line> readLines = new ArrayList<>();
         Document doc = Jsoup.connect(siteUrl).maxBodySize(0).get();
         Elements element = doc.select("td");
@@ -99,29 +100,34 @@ public class HtmlParsing {
                 }
             }
         });
-        this.lines = readLines;
+        return readLines;
     }
 
-    public void readMetroConnection() throws IOException {
+    public ArrayList<Connection> readMetroConnection(String siteUrl) throws IOException {
 //Connection
         ArrayList<Connection> readConnections = new ArrayList<>();
         ArrayList<String> stationsLineInfo = new ArrayList<>();
         ArrayList<String> stationsConnectInfo = new ArrayList<>();
         ArrayList<Station> connectionStations = new ArrayList<>();
         String[] stationCreateInfo = new String[3];
+        int lineNumberIndex = 0;
+        int stationNumberIndex = 1;
+        int stationNameIndex = 2;
+        int lineInfo_line = 0;
+        int lineInfo_numberStation = 2;
 
-        Document doc = Jsoup.connect(this.siteUrl).maxBodySize(0).get();
+        Document doc = Jsoup.connect(siteUrl).maxBodySize(0).get();
         Elements element = doc.select("td");
         element.forEach(e ->
         {
             String lineStationNumbers = e.select("span").text();
             if (lineStationNumbers.trim().split(" ").length >= 3) {
                 String lineINFO[] = e.select("span").text().trim().split(" ");
-                if (lineINFO[0].matches("\\d+.") && lineINFO[2].matches("\\d+")) {
+                if (lineINFO[lineInfo_line].matches("\\d+.") && lineINFO[lineInfo_numberStation].matches("\\d+")) {
                     String lineNumber = lineINFO[e.select("span").text().trim().split(" ").length - 3];
                     String stationNumber = lineINFO[e.select("span").text().trim().split(" ").length - 1];
-                    stationCreateInfo[0] = lineNumber;
-                    stationCreateInfo[1] = stationNumber;
+                    stationCreateInfo[lineNumberIndex] = lineNumber;
+                    stationCreateInfo[stationNumberIndex] = stationNumber;
                 }
             }
             if (lineStationNumbers.trim().split(" +").length >= 1) {
@@ -140,17 +146,17 @@ public class HtmlParsing {
                     || (e.select("a").attr("title").matches("Фонвизинская"))
                     || (e.select("a").attr("title").matches("Полежаевская"))) {
                 String stationName = e.select("a").attr("title");
-                stationCreateInfo[2] = stationName;
+                stationCreateInfo[stationNameIndex] = stationName;
             }
-            if (stationCreateInfo[2] != null && stationCreateInfo[0] != null) {
-                if (stationCreateInfo[2].contains("(")) {
-                    int indexStartComment = stationCreateInfo[2].indexOf("(");
-                    stationCreateInfo[2] = stationCreateInfo[2].substring(0, (indexStartComment - 1));
+            if (stationCreateInfo[stationNameIndex] != null && stationCreateInfo[lineNumberIndex] != null) {
+                if (stationCreateInfo[stationNameIndex].contains("(")) {
+                    int indexStartComment = stationCreateInfo[stationNameIndex].indexOf("(");
+                    stationCreateInfo[stationNameIndex] = stationCreateInfo[stationNameIndex].substring(0, (indexStartComment - 1));
                 }
                 stationsLineInfo.clear();
                 stationsConnectInfo.clear();
                 connectionStations.clear();
-                connectionStations.add(new Station(stationCreateInfo[0], stationCreateInfo[1], stationCreateInfo[2]));
+                connectionStations.add(new Station(stationCreateInfo[lineNumberIndex], stationCreateInfo[stationNumberIndex], stationCreateInfo[stationNameIndex]));
                 for (int i = 0; i <= 2; i++) {
                     stationCreateInfo[i] = null;
                 }
@@ -176,6 +182,6 @@ public class HtmlParsing {
                 connectionStations.clear();
             }
         });
-        setConnections(readConnections);
+        return readConnections;
     }
 }
